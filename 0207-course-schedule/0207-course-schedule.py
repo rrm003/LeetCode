@@ -1,44 +1,35 @@
 class Solution:
-    def traverse(self, curr: int, visited: dict, graph: dict):
-        # print("processing", curr)
-        if len(visited) == len(graph):
-            return  graph[curr]
-
-        neighbor = graph[curr]
-        if len(neighbor) == 0:
-            return True
+    def dfs(self, dependency, curr, visited) -> bool:
+        if curr in visited:
+            return visited[curr]
         
         visited[curr] = False
-        is_possible = True
-        for x in neighbor:
-            if x not in visited:
-                rslt = self.traverse(x, visited, graph)
-                visited[x] = rslt
-                is_possible = is_possible and rslt
-            else:
-                is_possible = visited[x] and is_possible
-
-        visited[curr] = is_possible
-        # print("rslt", is_possible)
-        return is_possible
+        rslt = True
+        for n in dependency[curr]:
+            if n not in visited:
+                visited[n] = self.dfs(dependency, n, visited)
+                
+            rslt = rslt and visited[n]
+        
+        visited[curr] = rslt
+        return rslt
 
     def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
-        lookup = {}
-        for x in range(numCourses):
-            lookup[x] = []
-        
-        for pre in prerequisites:
-            lookup[pre[1]].append(pre[0])
-        
+        dependency = {}
         visited = {}
-        is_possible = True
-        for x in range(numCourses):
-            # print(visited)
-            if x not in visited:
-                rslt = self.traverse(x, visited, lookup)
-                visited[x] = rslt
-                is_possible = is_possible and rslt 
-            else:
-                is_possible = visited[x] and is_possible
 
-        return is_possible
+        for cn in range(numCourses):
+            dependency[cn] = []
+        
+        for info in prerequisites:
+            dependency[info[0]].append(info[1])
+        
+        rslt = True
+        for x in dependency:
+            if x not in visited or not visited[x]:
+                visited[x] = self.dfs(dependency, x, visited)
+                
+            rslt = rslt and visited[x]
+
+        return rslt 
+        
