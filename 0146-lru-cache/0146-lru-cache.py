@@ -18,17 +18,20 @@ class LRUCache:
             return -1
         
         curr = self.lookup[key]
+        if curr == self.head:
+            return curr.val
+
         prev = curr.prev
-        next = curr.next
+        nxt = curr.next
 
         if curr == self.tail:
             self.tail = prev
 
         if prev != None:
-            prev.next = next
+            prev.next = nxt
         
-        if next != None:
-            next.prev = prev
+        if nxt != None:
+            nxt.prev = prev
         
         if self.head != None:
             self.head.prev = curr
@@ -39,6 +42,9 @@ class LRUCache:
         return curr.val
 
     def put(self, key: int, value: int) -> None:
+        print(f"put key; {key}, value: {value}")
+        print(f"head {self.head}, tail {self.tail}")
+
         if key in self.lookup:
             node = self.lookup[key]
             node.val = value
@@ -52,23 +58,29 @@ class LRUCache:
             if self.head == None:
                 self.head = node
                 self.tail = node
+                print("setting tail", self.tail.key, self.tail.val)
                 return 
 
             self.head.prev = node
             self.head = node
-
             return
         
-        del self.lookup[self.tail.key]
-        self.tail = self.tail.prev
-        self.tail.next = None
+        tail = self.tail
+        print("tail", tail)
+        del self.lookup[tail.key]
+        self.tail = tail.prev
+        if self.tail != None:
+            self.tail.next = None
 
         node = Node(key, value)
         self.lookup[key] = node
         node.next = self.head
-        self.head.prev = node
-        self.head = node
+        if self.head != None:
+            self.head.prev = node
         
+        self.head = node
+        if self.tail == None:
+            self.tail = self.head
 
 
 
