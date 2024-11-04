@@ -1,4 +1,4 @@
-<h2><a href="https://leetcode.com/problems/remove-comments/?envType=problem-list-v2&envId=au0sjev5">722. Remove Comments</a></h2><h3>Medium</h3><hr><p>Given a C++ program, remove comments from it. The program source is an array of strings <code>source</code> where <code>source[i]</code> is the <code>i<sup>th</sup></code> line of the source code. This represents the result of splitting the original source code string by the newline character <code>&#39;\n&#39;</code>.</p>
+<h2><a href="https://leetcode.com/problems/remove-comments">722. Remove Comments</a></h2><h3>Medium</h3><hr><p>Given a C++ program, remove comments from it. The program source is an array of strings <code>source</code> where <code>source[i]</code> is the <code>i<sup>th</sup></code> line of the source code. This represents the result of splitting the original source code string by the newline character <code>&#39;\n&#39;</code>.</p>
 
 <p>In C++, there are two types of comments, line comments, and block comments.</p>
 
