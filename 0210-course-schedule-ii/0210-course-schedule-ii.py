@@ -1,50 +1,42 @@
 class Solution:
-    def traverse(self, curr: int, visited: dict, graph: dict, order: list):
-        # print("processing", curr)
-        if len(visited) == len(graph):
-            return graph[curr]
-
-        neighbor = graph[curr]
-        if len(neighbor) == 0:
-            # order.append(curr)
-            return True
+    def dfs(self, dependency, curr, visited, schedule) -> bool:
+        if curr in visited:
+            return visited[curr]
         
         visited[curr] = False
-        is_possible = True
-        for x in neighbor:
-            if x not in visited:
-                rslt = self.traverse(x, visited, graph, order)
-                visited[x] = rslt
-                order.append(x)
-                is_possible = is_possible and rslt
-            else:
-                is_possible = visited[x] and is_possible
+        rslt = True
+        for n in dependency[curr]:
+            if n not in visited:
+                visited[n] = self.dfs(dependency, n, visited, schedule)
+                
+            rslt = rslt and visited[n]
+        
+        if rslt:
+            schedule.append(curr)
 
-        visited[curr] = is_possible
-        # order.append(curr)
-        # print("rslt", is_possible)
-        return is_possible
+        visited[curr] = rslt
+        return rslt
 
     def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
-        lookup = {}
-        for x in range(numCourses):
-            lookup[x] = []
-        
-        for pre in prerequisites:
-            lookup[pre[1]].append(pre[0])
-        
+        dependency = {}
         visited = {}
-        is_possible = True
-        order = []
-        for x in range(numCourses):
-            # print(visited)
-            if x not in visited:
-                rslt = self.traverse(x, visited, lookup, order)
-                visited[x] = rslt
-                order.append(x)
-                is_possible = is_possible and rslt 
-            else:
-                is_possible = visited[x] and is_possible
+
+        for cn in range(numCourses):
+            dependency[cn] = []
         
-        order.reverse()
-        return order if is_possible else []
+        for info in prerequisites:
+            dependency[info[0]].append(info[1])
+        
+        rslt = True
+        schedule = []
+        for x in dependency:
+            if x not in visited or not visited[x]:
+                visited[x] = self.dfs(dependency, x, visited, schedule)
+            
+            rslt = rslt and visited[x]
+        
+        if len(schedule) < numCourses:
+            return []
+
+        return schedule 
+    
