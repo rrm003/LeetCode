@@ -5,7 +5,6 @@ class Solution:
         while i <= max(0, len(input)):
             a = i
             j = min(i + k - 1, len(input)-1)
-            print(i, j)
             while i < j:
                 input[i], input[j] = input[j], input[i]
                 i += 1
