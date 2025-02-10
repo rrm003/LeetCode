@@ -12,8 +12,6 @@ class Solution:
                 j += 1
             i+=1
 
-        print(transform)
-
         i = 0
         while i < m:
             j = n - 1
