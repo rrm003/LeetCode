@@ -1,35 +1,38 @@
 class Solution:
-    def dfs(self, dependency, curr, visited) -> bool:
-        if curr in visited:
-            return visited[curr]
-        
-        visited[curr] = False
+    def dfs(self, course: int, graph: dict, satisfied: List[bool], stack: List[int]) -> bool:
+        if len(graph[course]) == 0 or satisfied[course]: return True
+        if course in stack: return False
+
+        stack.append(course)
+
         rslt = True
-        for n in dependency[curr]:
-            if n not in visited:
-                visited[n] = self.dfs(dependency, n, visited)
-                
-            rslt = rslt and visited[n]
+        for pr in graph[course]:
+            rslt = rslt and self.dfs(pr, graph, satisfied, stack)
         
-        visited[curr] = rslt
+        satisfied[course] = rslt
+
         return rslt
 
+
     def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
-        dependency = {}
-        visited = {}
+        graph = {}
+        satisfied = {}
+        for i in range(numCourses):
+            graph[i] = []
+            satisfied[i] = True
+        
+        for prerequisite in prerequisites:
+            graph[prerequisite[0]].append(prerequisite[1])
+            satisfied[prerequisite[0]] = False
+        
+        print(graph)
 
-        for cn in range(numCourses):
-            dependency[cn] = []
-        
-        for info in prerequisites:
-            dependency[info[0]].append(info[1])
-        
         rslt = True
-        for x in dependency:
-            if x not in visited or not visited[x]:
-                visited[x] = self.dfs(dependency, x, visited)
-                
-            rslt = rslt and visited[x]
+        for i in range(numCourses):
+            if satisfied[i]:
+                continue
 
-        return rslt 
-        
+            stack = []
+            rslt = rslt and self.dfs(i, graph, satisfied, stack)
+
+        return rslt
