@@ -1,21 +1,21 @@
-class Solution:
-    def maxProfit(self, prices: List[int]) -> int:
-        rslt = 0
-        stack = []
+from collections import deque 
 
-        for p in prices:
-            if len(stack) == 0:
-                stack.append(p)
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:       
+        stack = deque([])
+
+        rslt = 0
+        for x in prices:
+            if not stack:
+                stack.append(x)
                 continue
             
-            elif stack[-1] < p:
-                rslt = max(rslt, p-stack[0])
+            if stack[-1] > x:
+                while stack and stack[-1] > x:
+                    stack.pop()
+            else:
+                rslt = max(rslt, x - stack[0])
             
-            elif stack[-1] > p:
-                while len(stack)>0 and stack[-1] > p:
-                    stack = stack[:-1]
-                
-                stack.append(p)
-                rslt = max(rslt, p-stack[0])
-        
+            stack.append(x)
+
         return rslt
