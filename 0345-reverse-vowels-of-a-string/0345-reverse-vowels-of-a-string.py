@@ -1,6 +1,6 @@
 class Solution:
 	def isVowel(self, char: str) -> bool:
-		vowels = ["a", "e", "i", "o", "u", "A", "E", "I", "O", "U"]
+		vowels = {"a":"", "e":"", "i":"", "o":"", "u":"", "A":"", "E":"", "I":"", "O":"", "U":""}
 		if char in vowels: return True
 		return False
 
