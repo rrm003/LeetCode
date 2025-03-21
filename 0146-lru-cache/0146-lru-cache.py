@@ -1,73 +1,76 @@
-class Node :
-    def __init__(self, key: int, val: int):
+class Node:
+    def __init__(self, key, val):
         self.key = key
-        self.val = val
+        self.value = val
         self.next = None
         self.prev = None
 
 class LRUCache:
 
     def __init__(self, capacity: int):
-        self.cap = capacity
-        self.head = None
-        self.tail = None
         self.lookup = {}
-    
-    def print(self):
-        temp = self.head
-        while temp:
-            print(f"({temp.key} : {temp.val})", end = " ")
-            temp = temp.next
-        print()
+        self.head = Node(-1, 0)
+        self.tail = Node(-1, 0)
+        self.head.next = self.tail
+        self.tail.prev = self.head 
+        self.size = capacity
 
     def get(self, key: int) -> int:
         if key not in self.lookup: return -1
-
         node = self.lookup[key]
-        if node == self.head: return node.val
-    
-        if node.prev:
-            node.prev.next = node.next
-        if node.next:
-            node.next.prev = node.prev
-        
-        if node == self.tail:
-            self.tail = self.tail.prev
-            if self.tail: self.tail.next = None
-        
-        node.next = self.head
-        node.prev = None
-        if self.head: self.head.prev = node
-        self.head = node
+        prev, next = node.prev, node.next
+        prev.next = next
+        next.prev = prev
 
-        return node.val
+        f = self.head.next
+        f.prev = node
+        node.next = f
+
+        self.head.next = node
+        node.prev = self.head
+        
+        return node.value
+
 
     def put(self, key: int, value: int) -> None:
-        node = None
         if key in self.lookup:
             node = self.lookup[key]
-            node.val = value
-            self.get(node.key)
-            return
+            node.value = value
+
+            prev, next = node.prev, node.next
+            prev.next = next
+            next.prev = prev
+
+            f = self.head.next
+            f.prev = node
+            node.next = f
+
+            self.head.next = node
+            node.prev = self.head
+
+            return node.value
+        
+        if len(self.lookup) == self.size:
+            p = self.tail.prev
+            del self.lookup[p.key]
+            p.prev.next = p.next
+            p.next.prev = p.prev
         
         node = Node(key, value)
         self.lookup[key] = node
 
-        node.next = self.head
-        if self.head: self.head.prev = node
-        self.head = node
-        if not self.tail: self.tail = self.head
-        
-        # capacity check
-        if len(self.lookup)>self.cap:
-            if self.tail:
-                print(self.tail.key, self.tail.val)
-                del self.lookup[self.tail.key]
-                self.tail = self.tail.prev
-                if self.tail:
-                    self.tail.next = None
+        f = self.head.next
+        f.prev = node
+        node.next = f
+
+        self.head.next = node
+        node.prev = self.head
+
+        return
+
 
 # Your LRUCache object will be instantiated and called as such:
 # obj = LRUCache(capacity)
 # param_1 = obj.get(key)
 # obj.put(key,value)
+# (4, 1) (2, 3) 
