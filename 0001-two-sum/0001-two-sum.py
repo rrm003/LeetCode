@@ -1,12 +1,13 @@
 class Solution:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
         lookup = {}
-        for i, x in enumerate(nums):
-            diff = target - x
-            if diff in lookup:
-                return [lookup[diff], i]
+        l = len(nums)
 
-            if x not in lookup:
-                lookup[x] = i
+        i = 0
+        for i in range(l): 
+            if nums[i] in lookup:
+                return [lookup[nums[i]], i]
 
+            lookup[target - nums[i]] = i 
+            
         return []
