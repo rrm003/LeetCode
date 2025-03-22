@@ -1,38 +1,32 @@
 class Solution:
-    def dfs(self, course: int, graph: dict, satisfied: List[bool], stack: List[int]) -> bool:
-        if len(graph[course]) == 0 or satisfied[course]: return True
-        if course in stack: return False
-
-        stack.append(course)
+    def dfs(self, graph, curr, completed, visits) -> bool:
+        if len(graph[curr]) == 0: return True
+        if completed[curr]: return True
+        if curr in visits: return False
 
         rslt = True
-        for pr in graph[course]:
-            rslt = rslt and self.dfs(pr, graph, satisfied, stack)
-        
-        satisfied[course] = rslt
+        visits.append(curr)
+        for deps in graph[curr]:
+            rslt = rslt and self.dfs(graph, deps, completed, visits)
+        visits = visits[:-1]
 
+        completed[curr] = rslt
         return rslt
 
 
     def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
         graph = {}
-        satisfied = {}
+        completed = {}
+
         for i in range(numCourses):
-            graph[i] = []
-            satisfied[i] = True
+            graph[i] = [] 
+            completed[i] = False
         
-        for prerequisite in prerequisites:
-            graph[prerequisite[0]].append(prerequisite[1])
-            satisfied[prerequisite[0]] = False
-        
-        print(graph)
+        for preq in prerequisites:
+            graph[preq[0]].append(preq[1])
 
         rslt = True
         for i in range(numCourses):
-            if satisfied[i]:
-                continue
-
-            stack = []
-            rslt = rslt and self.dfs(i, graph, satisfied, stack)
-
+            rslt = rslt and self.dfs(graph, i, completed, [])
+        
         return rslt
