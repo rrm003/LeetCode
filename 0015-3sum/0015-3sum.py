@@ -1,19 +1,15 @@
 class Solution:
     def threeSum(self, nums: List[int]) -> List[List[int]]:
-        target = 0
+        l = len(nums)
+
         rslt = set()
-        for i, first in enumerate(nums[:-1]):
-            rem = target - first
-            
+        nums.sort()
+        for i in range(0, l):
+            target = -nums[i]
             lookup = {}
-            for j in range(i+1, len(nums)):
-                third = nums[j]
-                diff = rem - third
-                if diff in lookup:
-                    grp = [first, diff, third]
-                    grp.sort()
-                    rslt.add(tuple(grp))
-                
-                lookup[third] = i
+            for j in range(i+1, l):
+                if nums[j] in lookup:
+                    rslt.add((nums[i], target - nums[j], nums[j]))
+                lookup[target - nums[j]] = j
             
         return list(rslt)
