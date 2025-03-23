@@ -1,37 +1,19 @@
 class Solution:
-    def LIS(self, nums, pos, memo) -> int:
-        if pos == len(nums): return 0
-
-        rslt = 0
-
-        for i in range(pos+1, len(nums)):
-            if nums[pos] < nums[i]:
-                if i in memo:
-                    rslt = max(rslt, memo[i])
-                    continue
-
-                memo[i] = 1+self.LIS(nums, i, memo)
-                rslt = max(rslt, memo[i])
-            
-            # rslt = max(rslt, self.LIS(nums, i, memo))
-        
-        memo[pos] = rslt
-        
-        return rslt
-
     def lengthOfLIS(self, nums: List[int]) -> int:
-        rslt = 0
-        memo = {}
-        
-        i = len(nums)-1
-        while i >= 0:
-            if i in memo:
-                rslt = max(rslt, memo[i])
-                i-=1
-                continue
+        l = len(nums)
+        dp = [1 for i in range(l)]
 
-            memo[i] =  1 + self.LIS(nums, i, memo)
-            rslt = max(rslt, memo[i])
-            i -= 1
+        j = 0
+        i = j + 1
 
-        return rslt
+        while i < l:
+            j = 0
+            while j < i:
+                if nums[i] > nums[j]:
+                    dp[i] = max(dp[i], dp[j] + 1)
+                j+=1
+            
+            i += 1
+        print(dp)
+
+        return max(dp)
