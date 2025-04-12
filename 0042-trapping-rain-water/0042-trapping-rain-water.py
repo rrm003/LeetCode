@@ -1,26 +1,28 @@
 class Solution:
     def trap(self, height: List[int]) -> int:
+        height_left = [-math.inf for _ in height]
+        height_right = [-math.inf for _ in height]
         l = len(height)
-        left = [-math.inf for _ in range(l)]
-        right = [-math.inf for _ in range(l)]
 
-        i = 0 
         val = 0
-        while i < l:
+        for i in range(l):
             val = max(height[i], val)
-            left[i] = val
-            i+=1
+            height_right[i] = val
         
+        val = 0 
         j = l - 1
-        val = 0
-        while j>=0 :
+        while j >= 0:
             val = max(height[j], val)
-            right[j] = val
+            height_left[j] = val
             j -= 1
         
-        rslt = 0
-        for i in range(l):
-            h = min(left[i], right[i])
-            rslt += h - height[i]
 
-        return rslt
+        water = 0
+        for i in range(l):
+            m = min(height_left[i], height_right[i])
+            water += m - height[i]
+
+        return water
+        
+
+                
