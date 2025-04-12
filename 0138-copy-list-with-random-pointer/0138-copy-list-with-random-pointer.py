@@ -9,15 +9,14 @@ class Node:
 
 class Solution:
     def copyRandomList(self, head: 'Optional[Node]') -> 'Optional[Node]':
-        if not head : return 
-        
         lookup = {}
         temp = head
-        while temp :
+        
+        while temp:
             lookup[temp] = Node(temp.val)
             temp = temp.next
         
-        temp = head
+        temp = head 
         while temp:
             if temp.next:
                 lookup[temp].next = lookup[temp.next]
@@ -26,5 +25,5 @@ class Solution:
                 lookup[temp].random = lookup[temp.random]
             
             temp = temp.next
-
+        
         return lookup[head]
