@@ -2,10 +2,18 @@ class Solution:
     def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
         lookup = {}
 
-        for word in strs:
-            sorted_word = "".join(sorted(word))
-            if sorted_word not in lookup:
-                lookup[sorted_word] = []
-            lookup[sorted_word].append(word)
+        for s in strs:
+            chars = sorted(s)
+            sorted_s = "".join(chars)
+            # print(sorted_s)
+            if sorted_s not in lookup:
+                lookup[sorted_s] = []
 
-        return list(lookup.values())
+            lookup[sorted_s].append(s)
+        
+        grouped = []
+
+        for key, val in lookup.items():
+            grouped.append(val)
+
+        return grouped
