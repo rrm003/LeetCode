@@ -1,45 +1,31 @@
 class Solution:
-    def iterate(self, board, x, y, word, visited) -> bool:
-        l = len(board)
-        w = len(board[0])
+    def dfs(self, board, i, j, w, word, visited) -> bool:
+        if w == len(word) -1 : return True
+        if visited[i][j]: return True
 
-        if len(word) == 0:
-            return True
+        m = len(board)
+        n = len(board[0])
+        neighbours = [(1, 0), (0, 1), (-1, 0), (0, -1)]
+        visited[i][j] = True
+        for neighbour in neighbours:
+            x1, y1 = i + neighbour[0], j + neighbour[1]
+            if x1 >= 0 and x1 < m and y1 >= 0 and y1 < n and not visited[x1][y1]:
+                if w < len(word) - 1 and board[x1][y1] == word[w+1]:
+                    rslt = self.dfs(board, x1, y1, w + 1, word, visited)
+                    if rslt: return True
         
-        neighours = [(-1, 0), (0, -1), (1, 0), (0, 1)]
-        
-        ch = word[0]
-        rslt = False
-        for i, j in neighours:
-            x1 = x + i
-            y1 = y + j
-            if x1<0 or x1>=l or y1<0 or y1 >= w:
-                continue
-
-            if board[x1][y1] == ch and (x1, y1) not in visited:
-                visited.append((x1, y1))
-                # print("found", ch)
-                rslt = rslt or self.iterate(board, x1, y1, word[1:], visited)
-                visited = visited[:-1]
-                if rslt: return True
-        
+        visited[i][j] = False
         return False
-            
+
     def exist(self, board: List[List[str]], word: str) -> bool:
-        l = len(board)
-        w = len(board[0])
-        ch = word[0]
+        m = len(board)
+        n = len(board[0])
 
-        starting_points = []
-
-        i = 0
-        while i < l:
-            j = 0 
-            while j < w:
-                visited = [(i, j)]
-                if board[i][j] == ch:
-                    if self.iterate(board, i, j, word[1:], visited): return True
-                j+=1
-            i+=1
+        for i in range(m):
+            for j in range(n):
+                if board[i][j] == word[0]:
+                    visited = [[False for _ in range(n)] for _ in range(m)]
+                    if self.dfs(board, i, j, 0, word, visited):
+                        return True
         
         return False
