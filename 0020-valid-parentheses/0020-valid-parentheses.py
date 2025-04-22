@@ -1,18 +1,17 @@
-from collections import deque as dq
-
 class Solution:
     def isValid(self, s: str) -> bool:
-        if len(s) == 1: return False
+        stack = []
+        lookup = {")": "(", "}": "{", "]":"["}
 
-        brackets = {")":"(", "]":"[", "}":"{"}
-
-        stack = deque([])
-        for b in s:
-            if b in brackets.values():
-                stack.append(b)
+        for ch in s:
+            if ch in lookup and stack:
+                if stack[-1] != lookup[ch]:
+                    return False
+                else:
+                    stack = stack[:-1]
             else:
-                if len(stack) == 0: return False
-                if stack[-1] != brackets[b]: return False
-                stack.pop()
-        
-        return len(stack) == 0
+                stack.append(ch)
+
+        if len(stack) > 0: return False
+
+        return True
