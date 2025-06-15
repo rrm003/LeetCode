@@ -6,23 +6,30 @@
  *     Right *TreeNode
  * }
  */
-func traverse(root *TreeNode, stack []int) int{
-    if root == nil {return 0}
-
-    count := 0
-    if len(stack) == 0 || root.Val >= stack[len(stack)-1]{
-        stack = append(stack, root.Val)
-        count += 1
+func traverse(root *TreeNode, max int) []int {
+    rslt := []int{}
+    if root == nil {
+        return rslt
     }
 
-    count += traverse(root.Left, stack)
-    count += traverse(root.Right, stack)
+    if root.Val >= max {
+        rslt = append(rslt, root.Val)
+        max = root.Val
+    }
 
-    stack = stack[:len(stack)-1]
+    if root.Left != nil {
+        rslt = append(rslt, traverse(root.Left, max)...)
+    }
 
-    return count
+    if root.Right != nil {
+        rslt = append(rslt, traverse(root.Right, max)...)
+    }
+
+    return rslt
 }
 
 func goodNodes(root *TreeNode) int {
-    return traverse(root, []int{})   
+    goodNodes := traverse(root, -math.MaxInt)
+    fmt.Println(goodNodes)
+    return len(goodNodes)
 }
