@@ -7,42 +7,50 @@
  * }
  */
 
-func dfs(root *TreeNode, target *TreeNode) ([]*TreeNode, bool){
-    if root == nil {return []*TreeNode{}, false}
-    if root == target{
-        return []*TreeNode{root}, true
+func findPath(root, target *TreeNode, path *[]*TreeNode) bool{
+    if root == nil {
+        return false
+    }   
+
+    *path = append(*path, root)
+    if root == target {
+        return true
     }
 
-    rslt := []*TreeNode{root}
-    path, found := dfs(root.Left, target)
-    if found{
-        rslt = append(rslt, path...)
-        return rslt, true
+    if root.Left != nil {
+        found := findPath(root.Left, target, path)
+        if found {
+            return true
+        }
     }
 
-    path, found = dfs(root.Right, target)
-    if found{
-        rslt = append(rslt, path...)
-        return rslt, true
+    if root.Right != nil {
+        found := findPath(root.Right, target, path)
+        if found {
+            return true
+        }
     }
+    
+    *path = (*path)[:len(*path) - 1]
 
-    return rslt, false
+    return false
 }
 
 func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
-    if root == nil {return nil}
-    path1, _ := dfs(root, p)
-    path2, _ := dfs(root, q)
+    p_path := []*TreeNode{}
+    q_path := []*TreeNode{}
+    findPath(root, p, &p_path)
+    findPath(root, q, &q_path)
 
-    l := min(len(path1), len(path2))
-
+    i := 0 
     var rslt *TreeNode
-    for i:=0; i < l; i++{
-        if path1[i] == path2[i] {
-            rslt = path1[i]
-        }else{
-            break
+    for _, node := range p_path{
+        if node.Val != q_path[i].Val {
+            return rslt
         }
+
+        rslt = node
+        i += 1
     }
 
     return rslt
