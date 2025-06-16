@@ -7,44 +7,53 @@
  * }
  */
 
-func sum(arr []int) int{
-    sum := 0
-    for _, a := range arr{
-        sum += a
-    }
-
-    return sum
-}
-
-func levelOrder(root *TreeNode, level int, order map[int][]int) {
-    if root == nil {
-        return
-    }
-
-    if _, ok := order[level]; !ok{
-        order[level] = []int{}
-    }
-
-    order[level] = append(order[level], root.Val)
-
-    levelOrder(root.Left, level + 1, order)
-    levelOrder(root.Right, level + 1, order)
+type NodeInfo struct {
+    Node *TreeNode
+    Level int
 }
 
 func maxLevelSum(root *TreeNode) int {
-    order := make(map[int][]int)
-    levelOrder(root, 1, order)
+    queue := []*NodeInfo{{root, 0}}
+    lookup := make(map[int][]*TreeNode) 
 
-    global := 0
-    level := -1
-    for k, val := range order{
-        local := sum(val)
+    for len(queue) > 0 {
+        curr := queue[0]
+        queue = queue[1:]
 
-        if local > global{
-            level = k
-            global = max(local, global)
+        if _, ok := lookup[curr.Level]; !ok {
+            lookup[curr.Level] = []*TreeNode{}
+        }
+
+        lookup[curr.Level] = append(lookup[curr.Level], curr.Node)
+
+        if curr.Node.Left != nil {
+            queue = append(queue, &NodeInfo{curr.Node.Left, curr.Level + 1})
+        }
+
+        if curr.Node.Right != nil {
+            queue = append(queue, &NodeInfo{curr.Node.Right, curr.Level + 1})
         }
     }
 
-    return level
+    i := 0 
+    l := len(lookup)
+    max_sum := 0
+    max_level := 0
+
+    for i < l {
+        nodes := lookup[i]
+        total := 0 
+        for _, node := range nodes{
+            total += node.Val
+        }
+
+        if total > max_sum {
+            max_sum = total 
+            max_level = i
+        }
+
+        i++
+    }
+
+    return max_level + 1
 }
