@@ -6,32 +6,46 @@
  *     Right *TreeNode
  * }
  */
-func levelOrder(root *TreeNode, level int, order map[int][]int){
-    if root == nil{
-        return 
-    }
 
-    if _, ok := order[level]; !ok{
-        order[level] = []int{}
-    }
-
-    order[level] = append(order[level], root.Val)
-
-    levelOrder(root.Left, level + 1, order)
-    levelOrder(root.Right, level + 1, order)
-
-    return
+type NodeInfo struct {
+    Node *TreeNode
+    level int
 }
 
 func rightSideView(root *TreeNode) []int {
-    order := make(map[int][]int)
+    if root == nil {
+        return []int{}
+    }
+    
+    queue := []*NodeInfo{{root, 0}}
+    lookup := make(map[int][]*TreeNode)
 
-    levelOrder(root, 0, order)
+    for len(queue) > 0 {
+        curr := queue[0]
+        if _, ok := lookup[curr.level]; !ok {
+            lookup[curr.level] = []*TreeNode{}
+        }
 
-    l := len(order)
-    rslt := []int{}
-    for i:=0; i<l; i++{
-        rslt = append(rslt, order[i][len(order[i])-1])
+        lookup[curr.level] = append(lookup[curr.level], curr.Node)
+
+        queue = queue[1:]
+
+        if curr.Node.Left != nil {
+            queue = append(queue, &NodeInfo{curr.Node.Left, curr.level + 1})
+        }
+
+        if curr.Node.Right != nil {
+            queue = append(queue, &NodeInfo{curr.Node.Right, curr.level + 1})
+        }
+    }
+
+    rslt := make([]int, 0)
+    l := len(lookup)
+    i:=0 
+    for i < l {
+        v := lookup[i]
+        rslt = append(rslt, v[len(v)-1].Val)
+        i++
     }
 
     return rslt
