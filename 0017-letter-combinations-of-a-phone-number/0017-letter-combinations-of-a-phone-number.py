@@ -1,31 +1,27 @@
 class Solution:
-    def __init__(self):
-        self.lookup = {
-                '2': ['a', 'b', 'c'],
-                '3': ['d', 'e', 'f'],
-                '4': ['g', 'h', 'i'],
-                '5': ['j', 'k', 'l'],
-                '6': ['m', 'n', 'o'],
-                '7': ['p', 'q', 'r', 's'],
-                '8': ['t', 'u', 'v'],
-                '9': ['w', 'x', 'y', 'z'],
-        }
+    def combine(self, digit, lookup):
+        if not digit: return []
 
-    def solve(self, digits, prefix, rslt):
-        if len(digits) == 0:
-            if len(prefix) > 0:
-                rslt.append(prefix)
-            return 
+        curr = digit[0]
+        digit = digit[1:]
+        combinations = self.combine(digit, lookup)
+        if not combinations:
+            return lookup[curr]
+        else:
+            rslt = []
+            for i in lookup[curr]:
+                for combination in combinations:
+                    rslt.append(i + combination)
+            
+            return rslt
         
-        curr = digits[0]
-        digits = digits[1:]
-
-        for x in self.lookup[curr]:
-            self.solve(digits, prefix + x, rslt)
-        
-
+        return []
 
     def letterCombinations(self, digits: str) -> List[str]:
-        rslt = []
-        self.solve(digits, "", rslt)
-        return rslt
+        lookup = {
+            "2": ["a", "b", "c"], "3": ["d", "e", "f"], "4": ["g", "h", "i"],
+            "5": ["j", "k", "l"], "6": ["m", "n", "o"], "7": ["p", "q", "r", "s"],
+            "8": ["t", "u", "v"], "9": ["w", "x", "y", "z"],
+        }
+
+        return self.combine(digits, lookup)
